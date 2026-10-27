@@ -6,6 +6,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 console.log('KEY present:', !!process.env.DATA_ENCRYPTION_KEY);
+  app.enableCors({ origin: 'http://localhost:5173' })
 
   const config = new DocumentBuilder()
     .setTitle('API Documentation') 

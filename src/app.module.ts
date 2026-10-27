@@ -4,6 +4,7 @@ import { ConfigService, ConfigModule } from '@nestjs/config';
 import { EnvSecretsModule } from './env-secrets/env-secrets.module';
 import { EnvSecret } from './env-secrets/entities/env-secret.entity'; 
 import { CryptoModule } from './crypto/crypto.module';
+import { GeneratorModule } from './generator/generator.module';
 
 @Module({
   imports: [
@@ -35,6 +36,9 @@ import { CryptoModule } from './crypto/crypto.module';
 
    
     CryptoModule,
+
+   
+    GeneratorModule,
   ],
 })
 export class AppModule { }
