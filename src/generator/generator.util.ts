@@ -2,17 +2,17 @@ import { CreateGeneratorDto } from './dto/create-generator.dto';
 
 export class DockerGenerator {
   static generateCompose(dto: CreateGeneratorDto): string {
-   
-    const extBack = dto.externalPortBack || '8082';
+    const extBack = dto.externalPortBack || '3000';
     const intBack = dto.internalPortBack || '3000';
-    const extFront = dto.externalPortFront || '8083';
-    const intFront = dto.internalPortFront || '80';
-    const nameFront = dto.containerNameFront
-    const nameBack = dto.containerNameBack
 
-    
-    const imgBack = dto.imgBackValue || './backend'; 
-    const imgFront = dto.imgFrontValue || './frontend/frontFiles';
+    const extFront = dto.externalPortFront || '8080';
+    const intFront = dto.internalPortFront || '80';
+
+    const nameBack = dto.containerNameBack || 'backend';
+    const nameFront = dto.containerNameFront || 'frontend';
+
+    const imgBack = dto.imgBackValue || './backend';
+    const imgFront = dto.imgFrontValue || './frontend';
 
     return `services:
   postgres:
@@ -30,7 +30,8 @@ export class DockerGenerator {
       - secure_network
 
   backend:
-    build: ${imgBack}
+    build:
+      context: ${imgBack}
     container_name: ${nameBack}
     restart: unless-stopped
     env_file: .env
@@ -46,7 +47,8 @@ export class DockerGenerator {
       - secure_network
 
   frontend:
-    build: ${imgFront}
+    build:
+      context: ${imgFront}
     container_name: ${nameFront}
     restart: unless-stopped
     ports:
@@ -62,6 +64,7 @@ volumes:
 
 networks:
   secure_network:
-    driver: bridge`;
+    driver: bridge
+`;
   }
 }
