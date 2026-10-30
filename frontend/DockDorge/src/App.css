@@ -584,3 +584,48 @@ select:focus-visible {
     animation-iteration-count: 1 !important;
   }
 }
+.docker-example {
+  overflow: hidden;
+  padding: 0;
+}
+
+.docker-example .result-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #30363d;
+}
+
+.copy-btn {
+  margin-left: auto;
+  padding: 7px 13px;
+  color: #c9d1d9;
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.copy-btn:hover {
+  background: #30363d;
+  border-color: #5b9dff;
+  color: #fff;
+}
+
+.docker-example .result-code {
+  margin: 0;
+  padding: 20px;
+  overflow-x: auto;
+  background: #0d1117;
+  color: #c9d1d9;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.docker-example .result-code code {
+  white-space: pre;
+}

@@ -18,6 +18,7 @@ export default function App() {
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
 
+
   const [packageManager, setPackageManager] = useState('npm');
   const [command, setCommand] = useState('node dist/main.js');
   const [multiStage, setMultiStage] = useState(true);
@@ -29,9 +30,9 @@ export default function App() {
   // Универсальный обработчик чекбоксов
   const handleCheckboxChange =
     (setter: (checked: boolean) => void) =>
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setter(e.target.checked);
-    };
+      (e: ChangeEvent<HTMLInputElement>) => {
+        setter(e.target.checked);
+      };
 
   const createEnv = async () => {
     try {
@@ -66,6 +67,7 @@ export default function App() {
 
       const data: { id: number; value: string }[] = await res.json();
       setOutput(data.map((e) => e.value).join('\n'));
+
     } catch (err) {
       console.error('Ошибка получения .env:', err);
       setError('Не удалось получить .env.');
@@ -192,58 +194,6 @@ export default function App() {
         </header>
 
         <main className="env">
-          {/* Создание .env */}
-          <section className="card">
-            <h1 className="card-title">Создание .env</h1>
-
-            <p className="card-text">
-              Впиши или вставь переменные окружения, по одной на строку
-              в формате KEY=value.
-            </p>
-
-            <label className="sr-only" htmlFor="env-input">
-              Содержимое .env
-            </label>
-
-            <textarea
-              className="textarea"
-              id="env-input"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder={'DB_HOST=localhost\nDB_PORT=5432'}
-              spellCheck={false}
-            />
-
-            <div className="actions">
-              <button
-                className="btn btn-primary"
-                type="button"
-                onClick={createEnv}
-              >
-                Создать запись
-              </button>
-            </div>
-          </section>
-
-          {/* Просмотр .env */}
-          <section className="card output">
-            <div className="output-head">
-              <span className="file-name">.env</span>
-
-              <button
-                className="btn btn-small"
-                type="button"
-                onClick={getDecryptedEnv}
-              >
-                Вывести
-              </button>
-            </div>
-
-            <pre className="code">
-              <code>{output}</code>
-            </pre>
-          </section>
-
           {/* Генератор Docker-конфигурации */}
           <section className="card">
             <h2 className="card-title">Генератор Dockerfile</h2>
@@ -398,36 +348,7 @@ export default function App() {
 
             {/* Настройки сборки */}
             <div className="field-row">
-              <div className="field">
-                <label className="field-label" htmlFor="df-manager">
-                  Менеджер пакетов
-                </label>
-                <select
-                  className="select"
-                  id="df-manager"
-                  value={packageManager}
-                  onChange={(e) => setPackageManager(e.target.value)}
-                >
-                  <option value="npm">npm</option>
-                  <option value="pnpm">pnpm</option>
-                  <option value="yarn">yarn</option>
-                </select>
-              </div>
 
-              <div className="field">
-                <label className="field-label" htmlFor="df-cmd">
-                  Команда запуска
-                </label>
-                <input
-                  className="input"
-                  id="df-cmd"
-                  type="text"
-                  placeholder="node dist/main.js"
-                  spellCheck={false}
-                  value={command}
-                  onChange={(e) => setCommand(e.target.value)}
-                />
-              </div>
             </div>
 
             {/* Параметры */}
@@ -438,38 +359,13 @@ export default function App() {
                 <label className="check">
                   <input
                     type="checkbox"
-                    checked={multiStage}
-                    onChange={handleCheckboxChange(setMultiStage)}
-                  />
-                  <span>Multi-stage сборка</span>
-                </label>
-
-                <label className="check">
-                  <input
-                    type="checkbox"
-                    checked={nonRoot}
-                    onChange={handleCheckboxChange(setNonRoot)}
-                  />
-                  <span>Запуск не от root</span>
-                </label>
-
-                <label className="check">
-                  <input
-                    type="checkbox"
                     checked={healthcheck}
                     onChange={handleCheckboxChange(setHealthcheck)}
                   />
                   <span>HEALTHCHECK</span>
                 </label>
 
-                <label className="check">
-                  <input
-                    type="checkbox"
-                    checked={dockerignore}
-                    onChange={handleCheckboxChange(setDockerignore)}
-                  />
-                  <span>Создать .dockerignore</span>
-                </label>
+
               </div>
             </fieldset>
 
@@ -509,6 +405,61 @@ export default function App() {
               </pre>
             </section>
           )}
+
+          {/* Dockerfile example */}
+          <section className="card docker-example">
+
+            <div className="result-head">
+              <span className="result-dots">
+                <i />
+                <i />
+                <i />
+              </span>
+
+              <span className="file-name">Dockerfile.example</span>
+
+              <button
+                className="copy-btn"
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `FROM node:20-alpine AS builder
+
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install --legacy-peer-deps
+
+COPY . .
+
+RUN npm run build`,
+                  );
+                }}
+              >
+                Копировать
+              </button>
+            </div>
+
+            <pre className="result-code">
+              <code>{`FROM node:20-alpine AS builder
+
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install --legacy-peer-deps
+
+COPY . .
+
+RUN npm run build`}</code>
+            </pre>
+
+          </section>
         </main>
       </div>
     </div>
